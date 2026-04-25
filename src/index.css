@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Outfit", sans-serif;
+  --font-sans: "Inter", sans-serif;
+
+  --color-background: #0A0A0A;
+  --color-foreground: #FFFFFF;
+  --color-card: #121212;
+  --color-primary: #00FF57;
+  --color-secondary: #1A1A1A;
+  --color-muted: #1A1A1A;
+  --color-muted-foreground: #A1A1AA;
+  --color-border: #2A2A2A;
+  
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-primary/20;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.animate-marquee {
+  animation: marquee 8s linear infinite;
+}
+
+.glass {
+  @apply backdrop-blur-md bg-white/[0.03] border border-white/10;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-white;
+}
+
+.glow-btn {
+  @apply shadow-[0_0_20px_-5px_rgba(0,255,87,0.4)] hover:shadow-[0_0_30px_-2px_rgba(0,255,87,0.6)] transition-all duration-300;
+}
