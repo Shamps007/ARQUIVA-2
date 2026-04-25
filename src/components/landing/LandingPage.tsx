@@ -129,15 +129,56 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showCustomRoleInput, setShowCustomRoleInput] = useState(false);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const nextStep = () => setStep(s => s + 1);
   const prevStep = () => setStep(s => s - 1);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        name: formData.name,
+        whatsapp: formData.whatsapp,
+        segmento: formData.niche === "Outro" ? formData.customNiche : formData.niche,
+        cargo: formData.role === "Outros" ? formData.customRole : formData.role,
+        faturamento: formData.revenue,
+        objetivo: formData.goal
+      };
+
+      console.log("NOME DIGITADO:", formData.name);
+      console.log("📦 DADOS DO PAYLOAD:", payload);
+
+      // URL ATUALIZADA DA PLANILHA
+      const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzQWPCniw486cnX8RQzzmxdcJx4aRFh02-2WTKNg6Xo1FtTRE1AzYROELkA960KguGG/exec"; 
+
+      if (WEBHOOK_URL) {
+        await fetch(WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
+          body: JSON.stringify(payload)
+        });
+      }
+      
+      console.log("Formulário enviado!");
+      onComplete();
+    } catch (error) {
+      console.error("Erro na comunicação com a planilha:", error);
+      onComplete();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleNicheSelect = (n: string) => {
     if (n === "Outro") {
       setShowCustomInput(true);
-      setFormData({ ...formData, niche: "Outro" });
+      setFormData(prev => ({ ...prev, niche: "Outro" }));
     } else {
-      setFormData({ ...formData, niche: n, customNiche: "" });
+      setFormData(prev => ({ ...prev, niche: n, customNiche: "" }));
       setShowCustomInput(false);
       nextStep();
     }
@@ -146,9 +187,9 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
   const handleRoleSelect = (r: string) => {
     if (r === "Outros") {
       setShowCustomRoleInput(true);
-      setFormData({ ...formData, role: "Outros" });
+      setFormData(prev => ({ ...prev, role: "Outros" }));
     } else {
-      setFormData({ ...formData, role: r, customRole: "" });
+      setFormData(prev => ({ ...prev, role: r, customRole: "" }));
       setShowCustomRoleInput(false);
       nextStep();
     }
@@ -201,7 +242,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                 <div className="space-y-5">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-white/60 ml-1">Seu nome</Label>
-                    <Input id="name" placeholder="Ex: Lucas Guckert" className="h-16 rounded-2xl bg-white/5 border-white/10 focus:border-primary text-white text-lg px-6" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                    <Input id="name" placeholder="Ex: Lucas Guckert" className="h-16 rounded-2xl bg-white/5 border-white/10 focus:border-primary text-white text-lg px-6" value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))} />
                   </div>
                 </div>
                 <div className="flex gap-2 sm:gap-4 pt-4">
@@ -245,7 +286,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                           let masked = val;
                           if (val.length > 2) masked = `(${val.slice(0, 2)}) ${val.slice(2)}`;
                           if (val.length > 7) masked = `(${val.slice(0, 2)}) ${val.slice(2, 7)}-${val.slice(7)}`;
-                          setFormData({ ...formData, whatsapp: masked });
+                          setFormData(prev => ({ ...prev, whatsapp: masked }));
                         }
                       }} 
                     />
@@ -279,7 +320,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                 <div className="space-y-4">
                   <Select 
                     onValueChange={(value) => {
-                      setFormData({ ...formData, niche: value });
+                      setFormData(prev => ({ ...prev, niche: value }));
                       setShowCustomInput(value === "Outro");
                     }} 
                     value={formData.niche}
@@ -309,7 +350,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                       placeholder="Ex: Consultoria em TI" 
                       className="h-16 rounded-2xl bg-white/5 border-white/10 focus:border-primary text-white text-lg"
                       value={formData.customNiche}
-                      onChange={e => setFormData({ ...formData, customNiche: e.target.value })}
+                      onChange={e => setFormData(prev => ({ ...prev, customNiche: e.target.value }))}
                     />
                   </motion.div>
                 )}
@@ -342,7 +383,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                 <div className="space-y-4">
                   <Select 
                     onValueChange={(value) => {
-                      setFormData({ ...formData, role: value });
+                      setFormData(prev => ({ ...prev, role: value }));
                       setShowCustomRoleInput(value === "Outros");
                     }} 
                     value={formData.role}
@@ -372,7 +413,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                       placeholder="Ex: Diretor de Marketing" 
                       className="h-16 rounded-2xl bg-white/5 border-white/10 focus:border-primary text-white text-lg"
                       value={formData.customRole}
-                      onChange={e => setFormData({ ...formData, customRole: e.target.value })}
+                      onChange={e => setFormData(prev => ({ ...prev, customRole: e.target.value }))}
                     />
                   </motion.div>
                 )}
@@ -403,7 +444,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                   <p className="text-muted-foreground text-xl">Qual seu faturamento mensal médio?</p>
                 </div>
                 <div className="space-y-4">
-                  <Select onValueChange={(value) => setFormData({ ...formData, revenue: value })} value={formData.revenue}>
+                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, revenue: value }))} value={formData.revenue}>
                     <SelectTrigger className="w-full h-16 rounded-2xl bg-white/5 border-white/10 text-white text-lg px-6 focus:ring-primary focus:border-primary">
                       <SelectValue placeholder="Qual o faturamento mensal da sua empresa?" />
                     </SelectTrigger>
@@ -458,20 +499,24 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                 <div className="space-y-5">
                   <div className="space-y-2">
                     <textarea 
-                      placeholder="Fale um pouco mais sobre o seu objetivo e/ou negócio" 
+                      placeholder="Fale um pouco mais sobre o seu objetivo e/ou negócio (mínimo de 20 caracteres)" 
                       className="w-full min-h-[150px] p-6 rounded-2xl bg-white/5 border-white/10 focus:border-primary text-white text-lg resize-none outline-none focus:ring-1 focus:ring-primary transition-all"
                       value={formData.goal}
-                      onChange={e => setFormData({ ...formData, goal: e.target.value })}
+                      onChange={e => setFormData(prev => ({ ...prev, goal: e.target.value }))}
                     />
+                    <div className="text-right text-sm text-white/40">
+                      {formData.goal.trim().length} / 20 mín
+                    </div>
                   </div>
                 </div>
                 <div className="flex gap-2 sm:gap-4 pt-4 justify-end">
-                  <Button variant="ghost" onClick={prevStep} className="h-16 px-4 sm:px-8 text-muted-foreground hover:text-white text-base sm:text-lg">Voltar</Button>
+                  <Button variant="ghost" onClick={prevStep} disabled={isSubmitting} className="h-16 px-4 sm:px-8 text-muted-foreground hover:text-white text-base sm:text-lg">Voltar</Button>
                   <Button 
-                    onClick={onComplete}
-                    className="flex-1 max-w-[280px] h-16 text-base sm:text-lg md:text-lg bg-primary text-background font-bold glow-btn hover:bg-primary/90 transition-colors rounded-xl whitespace-normal h-auto py-2 sm:py-0 ml-auto flex items-center justify-center gap-2"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting || formData.goal.trim().length < 20}
+                    className="flex-1 max-w-[280px] h-16 text-base sm:text-lg md:text-lg bg-primary text-background font-bold glow-btn hover:bg-primary/90 transition-colors rounded-xl whitespace-normal h-auto py-2 sm:py-0 ml-auto flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    PROSSEGUIR <ArrowRight className="w-5 h-5 flex-shrink-0" />
+                    {isSubmitting ? "ENVIANDO..." : "PROSSEGUIR"} {!isSubmitting && <ArrowRight className="w-5 h-5 flex-shrink-0" />}
                   </Button>
                 </div>
               </motion.div>
@@ -481,7 +526,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
       </motion.div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs font-bold tracking-[0.2em] uppercase opacity-30 flex items-center gap-2">
-        <ShieldCheck className="w-4 h-4" /> Growth Academy Secure System
+        <ShieldCheck className="w-4 h-4" /> Sistema Seguro Growth Academy
       </div>
     </div>
   );
@@ -645,7 +690,7 @@ export default function LandingPage() {
       <section id="metodo" className="py-32 container mx-auto px-6">
         <div className="flex flex-col lg:flex-row gap-20">
           <div className="lg:w-1/3">
-            <span className="text-primary font-bold tracking-widest text-xs uppercase">O Blueprint</span>
+            <span className="text-primary font-bold tracking-widest text-xs uppercase">O Plano</span>
             <h2 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tight mt-4 text-white">Jornada da Implementação</h2>
             <p className="text-muted-foreground mt-6 text-lg">Três etapas cruciais para sair do amadorismo comercial e escalar com segurança.</p>
             <div className="mt-12 p-6 glass rounded-3xl border-primary/10">
@@ -699,7 +744,7 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent md:bg-gradient-to-r" />
             </div>
             <div className="md:w-1/2 p-12 lg:p-20 flex flex-col justify-center">
-              <span className="text-primary font-bold tracking-widest text-xs uppercase mb-4">Founder & Strategist</span>
+              <span className="text-primary font-bold tracking-widest text-xs uppercase mb-4">Fundador & Estrategista</span>
               <h2 className="text-4xl md:text-5xl font-heading font-extrabold mb-8 tracking-tight text-white">Lucas Guckert</h2>
               <div className="space-y-6 text-muted-foreground text-lg leading-relaxed">
                 <p>
@@ -731,7 +776,7 @@ export default function LandingPage() {
           <h2 className="text-4xl font-heading font-bold mb-4 tracking-tight text-white">Dúvidas Frequentes</h2>
           <p className="text-muted-foreground italic">Esclareça os pontos principais e tome sua decisão.</p>
         </div>
-        <Accordion type="single" collapsible className="w-full space-y-4">
+        <Accordion type="single" collapsible="true" className="w-full space-y-4">
           {[
             { 
               question: "O Método ARQUIVA serve para o meu nicho?", 
@@ -759,10 +804,10 @@ export default function LandingPage() {
       {/* Final CTA */}
       <section className="py-32">
         <div className="container mx-auto px-6">
-          <div className="relative p-12 md:p-24 rounded-[4rem] bg-gradient-to-br from-primary to-primary-foreground overflow-hidden text-center shadow-[0_0_100px_rgba(0,255,87,0.2)]">
+          <div className="relative px-6 py-12 md:p-24 rounded-[2.5rem] md:rounded-[4rem] bg-gradient-to-br from-primary to-primary-foreground overflow-hidden text-center shadow-[0_0_100px_rgba(0,255,87,0.2)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.4),transparent)]" />
             <div className="relative z-10 max-w-4xl mx-auto">
-              <h2 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black text-background tracking-tighter mb-8 leading-[0.9] sm:leading-[0.9] break-words hyphens-auto">
+              <h2 className="text-3xl sm:text-5xl md:text-7xl font-heading font-black text-background tracking-tighter mb-8 leading-[1] sm:leading-[0.9]">
                 VOCÊ NÃO PRECISA DE MAIS TENTATIVAS.<br /><span className="opacity-70">PRECISA DE MÉTODO.</span>
               </h2>
               <p className="text-background/80 text-xl md:text-2xl font-medium mb-12">
@@ -788,7 +833,7 @@ export default function LandingPage() {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-heading font-black tracking-tighter leading-none text-white">ARQUIVA</span>
-                <span className="text-[10px] uppercase tracking-[0.3em] font-bold opacity-40 text-white">System Acquisition</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold opacity-40 text-white">Sistemas de Aquisição</span>
               </div>
             </div>
             
@@ -801,7 +846,7 @@ export default function LandingPage() {
 
             <div className="text-right">
               <p className="text-sm font-medium text-white">© 2026 Lucas Guckert</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Growth & Predictability</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Crescimento & Previsibilidade</p>
             </div>
           </div>
         </div>

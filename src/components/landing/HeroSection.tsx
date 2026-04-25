@@ -1,33 +1,10 @@
 import React, { useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'motion/react';
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function HeroSection() {
   const container = useRef<HTMLDivElement>(null);
-  const textContainer = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    const words = gsap.utils.toArray('.scrub-word');
-    
-    gsap.to(words, {
-      scrollTrigger: {
-        trigger: container.current,
-        start: "top top",
-        end: "+=50%", // completes after scrolling half a viewport down
-        scrub: 1, // smooth scrubbing
-      },
-      color: "#4ade80",
-      textShadow: "0 0 30px rgba(74, 222, 128, 0.4)",
-      stagger: 0.1,
-      ease: "power2.out"
-    });
-  }, { scope: container });
 
   return (
     <section ref={container} className="relative pt-40 pb-20 md:pt-52 md:pb-32 overflow-hidden bg-[#111111]">
@@ -47,12 +24,11 @@ export default function HeroSection() {
             <div className="text-[#f2f2f2] mb-3 md:mb-5">
               Sua empresa não precisa de mais anúncios.
             </div>
-            <div ref={textContainer} className="flex flex-wrap items-center justify-center gap-x-[0.3em] gap-y-2">
+            <div className="flex flex-wrap items-center justify-center gap-x-[0.3em] gap-y-2">
               {["Precisa", "de", "um", "sistema."].map((word, i) => (
                 <span 
                   key={i} 
-                  className="scrub-word transition-colors duration-200" 
-                  style={{ color: "#222222" }} 
+                  className="text-primary drop-shadow-[0_0_15px_rgba(0,255,87,0.4)] transition-colors duration-200"
                 >
                   {word}
                 </span>
