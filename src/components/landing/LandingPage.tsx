@@ -196,7 +196,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background relative overflow-hidden">
+    <div className="h-screen w-full flex flex-col items-center justify-center px-4 sm:px-6 bg-background relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px]" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px]" />
@@ -204,15 +204,13 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="glass max-w-xl w-full p-8 md:p-12 rounded-[2.5rem] relative z-10 border-white/5"
+        className="glass max-w-xl w-full p-6 sm:p-8 md:p-12 rounded-[2.5rem] relative z-10 border-white/5 mx-auto"
       >
         <div className="mb-12">
           {/* Header from image */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-xl shadow-[0_0_20px_rgba(0,255,87,0.3)]">
-              <ShieldCheck className="text-background w-6 h-6 font-bold" />
-            </div>
-            <span className="text-xl font-heading font-black tracking-[0.05em] uppercase text-white/90">DIAGNÓSTICO ARQUIVA</span>
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 mb-8">
+            <img src="/logo_1.png" alt="Arquiva Logo" className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] object-contain rounded-xl shadow-[0_0_20px_rgba(0,255,87,0.3)] flex-shrink-0" />
+            <span className="text-xl sm:text-2xl font-heading font-black tracking-[0.05em] uppercase text-white/90 leading-tight">DIAGNÓSTICO ARQUIVA</span>
           </div>
           
           {/* Progress Bar from image */}
@@ -242,7 +240,7 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
                 <div className="space-y-5">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-white/60 ml-1">Seu nome</Label>
-                    <Input id="name" placeholder="Ex: Lucas Guckert" className="h-16 rounded-2xl bg-white/5 border-white/10 focus:border-primary text-white text-lg px-6" value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))} />
+                    <Input id="name" placeholder="Ex: João da Silva" className="h-16 rounded-2xl bg-white/5 border-white/10 focus:border-primary text-white text-lg px-6" value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))} />
                   </div>
                 </div>
                 <div className="flex gap-2 sm:gap-4 pt-4">
@@ -525,9 +523,6 @@ function DiagnosticForm({ onComplete }: { onComplete: () => void }) {
         </div>
       </motion.div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs font-bold tracking-[0.2em] uppercase opacity-30 flex items-center gap-2">
-        <ShieldCheck className="w-4 h-4" /> Sistema Seguro Growth Academy
-      </div>
     </div>
   );
 }
@@ -557,11 +552,9 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#111111]/80 backdrop-blur-md">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#4ade80] flex items-center justify-center rounded-lg">
-              <ShieldCheck className="text-[#111111] w-5 h-5 font-bold" />
-            </div>
-            <span className="text-xl font-heading font-extrabold tracking-tighter text-white">ARQUIVA</span>
+          <div className="flex items-center gap-3">
+            <img src="/logo_1.png" alt="Arquiva Logo" className="w-[50px] h-[50px] object-contain shadow-[0_0_10px_rgba(0,255,87,0.3)]" />
+            <span className="text-2xl font-heading font-extrabold tracking-tighter text-white">ARQUIVA</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
             <a href="#metodo" className="text-sm font-bold text-[#f2f2f2] hover:text-[#4ade80] transition-colors">O Método</a>
@@ -827,12 +820,10 @@ export default function LandingPage() {
       <footer className="py-16 border-t border-white/5">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-xl">
-                <ShieldCheck className="text-background w-6 h-6 font-bold" />
-              </div>
+            <div className="flex items-center gap-4">
+              <img src="/logo_1.png" alt="Arquiva Logo" className="w-[60px] h-[60px] object-contain rounded-xl shadow-[0_0_20px_rgba(0,255,87,0.3)]" />
               <div className="flex flex-col">
-                <span className="text-xl font-heading font-black tracking-tighter leading-none text-white">ARQUIVA</span>
+                <span className="text-2xl font-heading font-black tracking-tighter leading-none text-white">ARQUIVA</span>
                 <span className="text-[10px] uppercase tracking-[0.3em] font-bold opacity-40 text-white">Sistemas de Aquisição</span>
               </div>
             </div>
